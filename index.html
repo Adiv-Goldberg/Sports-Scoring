@@ -166,12 +166,10 @@
             </div>
         </div>
     </header>
-    
-    <!-- Mobile Menu removed entirely in favor of full header nav on all devices -->
 
-    <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         
-        <!-- Hero Section (Open, Typographic, No bounding boxes) -->
+        <!-- Hero Section -->
         <div class="py-20 md:py-32 border-b border-zinc-800/50">
             <div class="max-w-3xl">
                 <div class="inline-flex items-center gap-2 mb-6">
@@ -247,7 +245,7 @@
         <div class="py-16">
             <h2 class="text-xs font-mono uppercase tracking-widest text-zinc-500 mb-10">Data Management</h2>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 border-l border-zinc-900 pl-4 md:pl-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 border-l border-zinc-900 pl-4 md:pl-8">
                 <!-- Teams & Lineups -->
                 <div>
                     <h3 class="text-lg font-medium text-white mb-2 flex items-center justify-between">
@@ -271,38 +269,15 @@
                         Open League Dashboard <i class="fa-solid fa-arrow-right text-[10px]"></i>
                     </a>
                 </div>
-                
-                <!-- Storage Info -->
-                <div class="pt-6 md:pt-0 md:border-l md:border-zinc-900 md:pl-8">
-                    <h3 class="text-sm font-medium text-zinc-500 mb-4">Local Device Status</h3>
-                    <ul class="space-y-3 font-mono text-xs">
-                        <li class="flex justify-between text-zinc-400"><span>Saved Teams</span> <span class="text-white" id="stat-teams">12</span></li>
-                        <li class="flex justify-between text-zinc-400"><span>Active Lineups</span> <span class="text-white" id="stat-lineups">8</span></li>
-                        <li class="flex justify-between text-zinc-400"><span>Game Records</span> <span class="text-white" id="stat-games">24</span></li>
-                    </ul>
-                </div>
             </div>
         </div>
         
     </main>
 
-    <footer class="mt-auto border-t border-zinc-900 py-8 px-4">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="text-zinc-600 text-sm font-light">
-                &copy; <span id="year"></span> ScoreMaster.
-            </div>
-            <div class="flex gap-6 text-sm text-zinc-600 font-mono text-[10px] uppercase tracking-widest">
-                <span>100% Private</span>
-                <span>No Telemetry</span>
-                <span>Works Offline</span>
-            </div>
-        </div>
-    </footer>
-
     <!-- Modal Backdrop -->
     <div id="modal-backdrop" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-[60]" onclick="closeAllModals()"></div>
 
-    <!-- New Game Modal (Flat, sharp design) -->
+    <!-- New Game Modal -->
     <div id="new-game-modal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#09090b] border border-zinc-800 rounded-sm w-[90%] max-w-md hidden z-[70] shadow-2xl flex-col">
         <div class="px-6 py-5 border-b border-zinc-800 flex justify-between items-center">
             <h3 class="font-medium text-lg text-white">Select Sport</h3>
@@ -314,25 +289,25 @@
             <div class="flex flex-col space-y-2">
                 <button class="w-full text-left px-4 py-4 border border-zinc-800 hover:border-zinc-500 hover:bg-zinc-900 transition-colors flex items-center gap-4 rounded-sm group">
                     <i class="fa-solid fa-baseball text-zinc-600 group-hover:text-white w-6 text-center"></i>
-                    <span class="text-sm font-medium text-zinc-300 group-hover:text-white">Baseball Game</span>
+                    <span class="text-sm font-medium text-zinc-300 group-hover:text-white">Baseball Game (.bbgame)</span>
                 </button>
                 <button class="w-full text-left px-4 py-4 border border-zinc-800 hover:border-zinc-500 hover:bg-zinc-900 transition-colors flex items-center gap-4 rounded-sm group">
                     <i class="fa-solid fa-hockey-puck text-zinc-600 group-hover:text-white w-6 text-center"></i>
-                    <span class="text-sm font-medium text-zinc-300 group-hover:text-white">Hockey Game</span>
+                    <span class="text-sm font-medium text-zinc-300 group-hover:text-white">Hockey Game (.hkgame)</span>
                 </button>
                 <button class="w-full text-left px-4 py-4 border border-zinc-800 hover:border-zinc-500 hover:bg-zinc-900 transition-colors flex items-center gap-4 rounded-sm group">
                     <i class="fa-solid fa-football text-zinc-600 group-hover:text-white w-6 text-center"></i>
-                    <span class="text-sm font-medium text-zinc-300 group-hover:text-white">Football Game</span>
+                    <span class="text-sm font-medium text-zinc-300 group-hover:text-white">Football Game (.fbgame)</span>
                 </button>
                 <button class="w-full text-left px-4 py-4 border border-zinc-800 hover:border-zinc-500 hover:bg-zinc-900 transition-colors flex items-center gap-4 rounded-sm group">
                     <i class="fa-solid fa-basketball text-zinc-600 group-hover:text-white w-6 text-center"></i>
-                    <span class="text-sm font-medium text-zinc-300 group-hover:text-white">Basketball Game</span>
+                    <span class="text-sm font-medium text-zinc-300 group-hover:text-white">Basketball Game (.bkgame)</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Import File Modal (Minimalist) -->
+    <!-- Import File Modal -->
     <div id="import-modal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#09090b] border border-zinc-800 rounded-sm w-[90%] max-w-lg hidden z-[70] shadow-2xl flex-col">
         <div class="px-6 py-5 border-b border-zinc-800 flex justify-between items-center">
             <h3 class="font-medium text-lg text-white">Import Local Data</h3>
@@ -381,21 +356,6 @@
     </div>
 
     <script>
-        // Set current year
-        document.getElementById('year').textContent = new Date().getFullYear();
-
-        // Mobile Menu Toggle
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            if (menu.classList.contains('hidden')) {
-                menu.classList.remove('hidden');
-                menu.classList.add('block');
-            } else {
-                menu.classList.add('hidden');
-                menu.classList.remove('block');
-            }
-        }
-
         // Flat Modal Logic
         function openModal(id) {
             const backdrop = document.getElementById('modal-backdrop');
@@ -484,7 +444,6 @@
             const reader = new FileReader();
             
             reader.onload = function(e) {
-                // Simulate processing time
                 setTimeout(() => {
                     spinner.classList.add('hidden');
                     showToast(`Loaded ${selectedFile.name}`);
