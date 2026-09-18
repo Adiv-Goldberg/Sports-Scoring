@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScoreMaster | Offline Sports Scorer</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome for Sports & UI Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Minimalist, flat theme overriding default blockiness */
+        body {
+            background-color: #09090b; /* Zinc 950 */
+            color: #fafafa; /* Zinc 50 */
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Modern, minimal scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #09090b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f3f46;
+        }
+
+        /* Seamless Dropdown bridging */
+        .dropdown-bridge {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            height: 10px;
+            width: 100%;
+            background: transparent;
+        }
+
+        /* Fade-in animation for modals */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.2s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col relative pt-16">
+
+    <!-- Flush, border-bottom header -->
+    <header class="fixed top-0 inset-x-0 bg-[#09090b]/95 backdrop-blur-md border-b border-zinc-800 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-stopwatch-20 text-white text-xl"></i>
+                    <span class="font-semibold text-lg tracking-tight">
+                        ScoreMaster
+                    </span>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="flex items-center space-x-1 h-full">
+                    <a href="#" class="px-4 py-2 text-sm font-medium text-white transition-colors">Home</a>
+                    
+                    <!-- Baseball -->
+                    <div class="group relative h-full flex items-center">
+                        <button class="px-3 py-2 text-sm font-medium text-zinc-400 hover:text-white transition-colors flex items-center gap-1.5">
+                            Baseball <i class="fa-solid fa-angle-down text-[10px]"></i>
+                        </button>
+                        <div class="dropdown-bridge"></div>
+                        <div class="absolute top-[calc(100%-4px)] left-0 w-48 invisible opacity-0 group-hover:visible group-hover:opacity-100 bg-[#09090b] border border-zinc-800 shadow-2xl transition-all duration-150 z-50 rounded-sm">
+                            <div class="py-1">
+                                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors"><i class="fa-solid fa-play w-4 text-zinc-500"></i> New Game (.bbgame)</a>
+                                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors" onclick="openModal('import-modal')"><i class="fa-solid fa-upload w-4 text-zinc-500"></i> Load Game</a>
+                                <div class="h-px bg-zinc-800 my-1 mx-3"></div>
+                                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors"><i class="fa-solid fa-users w-4 text-zinc-500"></i> Rosters (.team)</a>
+                                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors"><i class="fa-solid fa-list w-4 text-zinc-500"></i> Lineups (.lnup)</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hockey -->
+                    <div class="group relative h-full flex items-center">
+                        <button class="px-3 py-2 text-sm font-medium text-zinc-400 hover:text-white transition-colors flex items-center gap-1.5">
+                            Hockey <i class="fa-solid fa-angle-down text-[10px]"></i>
+                        </button>
+                        <div class="dropdown-bridge"></div>
+                        <div class="absolute top-[calc(100%-4px)] left-0 w-48 invisible opacity-0 group-hover:visible group-hover:opacity-100 bg-[#09090b] border border-zinc-800 shadow-2xl transition-all duration-150 z-50 rounded-sm">
+                            <div class="py-1">
+                                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors"><i class="fa-solid fa-play w-4 text-zinc-500"></i> New Game (.hkgame)</a>
+                                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors" onclick="openModal('import-modal')"><i class="fa-solid fa-upload w-4 text-zinc-500"></i> Load Game</a>
+                                <div class="h-px bg-zinc-800 my-1 mx-3"></div>
+                                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors"><i class="fa-solid fa-users w-4 text-zinc-500"></i> Rosters (.team)</a>
+                                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors"><i class="fa-solid fa-shield-halved w-4 text-zinc-500"></i> Lines (.lnup)</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Football -->
+                    <div class="group relative h-full flex items-center">
+                        <button class="px-3 py-2 text-sm font-medium text-zinc-400 hover:text-white transition-colors flex items-center gap-1.5">
+                            Football <i class="fa-solid fa-angle-down text-[10px]"></i>
+                        </button>
+                        <div class="dropdown-bridge"></div>
+                        <div class="absolute top-[calc(100%-4px)] left-0 w-48 invisible opacity-0 group-hover:visible group-hover:opacity-100 bg-[#09090b] border border-zinc-800 shadow-2xl transition-all duration-150 z-50 rounded-sm">
+                            <div class="py-1">
+                                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors"><i class="fa-solid fa-play w-4 text-zinc-500"></i> New Game (.fbgame)</a>
+                                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors" onclick="openModal('import-modal')"><i class="fa-solid fa-upload w-4 text-zinc-500"></i> Load Game</a>
+                                <div class="h-px bg-zinc-800 my-1 mx-3"></div>
+                                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors"><i class="fa-solid fa-users w-4 text-zinc-500"></i> Rosters (.team)</a>
+                                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors"><i class="fa-solid fa-chess-board w-4 text-zinc-500"></i> Depth Chart (.lnup)</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Basketball -->
+                    <div class="group relative h-full flex items-center">
+                        <button class="px-3 py-2 text-sm font-medium text-zinc-400 hover:text-white transition-colors flex items-center gap-1.5">
+                            Basketball <i class="fa-solid fa-angle-down text-[10px]"></i>
+                        </button>
+                        <div class="dropdown-bridge"></div>
+                        <div class="absolute top-[calc(100%-4px)] left-0 w-48 invisible opacity-0 group-hover:visible group-hover:opacity-100 bg-[#09090b] border border-zinc-800 shadow-2xl transition-all duration-150 z-50 rounded-sm">
+                            <div class="py-1">
+                                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors"><i class="fa-solid fa-play w-4 text-zinc-500"></i> New Game (.bkgame)</a>
+                                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors" onclick="openModal('import-modal')"><i class="fa-solid fa-upload w-4 text-zinc-500"></i> Load Game</a>
+                                <div class="h-px bg-zinc-800 my-1 mx-3"></div>
+                                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors"><i class="fa-solid fa-users w-4 text-zinc-500"></i> Rosters (.team)</a>
+                                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors"><i class="fa-solid fa-rotate w-4 text-zinc-500"></i> Rotations (.lnup)</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- League -->
+                    <div class="group relative h-full flex items-center">
+                        <button class="px-3 py-2 text-sm font-medium text-zinc-400 hover:text-white transition-colors flex items-center gap-1.5">
+                            League <i class="fa-solid fa-angle-down text-[10px]"></i>
+                        </button>
+                        <div class="dropdown-bridge"></div>
+                        <div class="absolute top-[calc(100%-4px)] right-0 w-48 invisible opacity-0 group-hover:visible group-hover:opacity-100 bg-[#09090b] border border-zinc-800 shadow-2xl transition-all duration-150 z-50 rounded-sm">
+                            <div class="py-1">
+                                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors"><i class="fa-solid fa-trophy w-4 text-zinc-500"></i> Dashboard</a>
+                                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors"><i class="fa-solid fa-list-ol w-4 text-zinc-500"></i> Standings</a>
+                                <div class="h-px bg-zinc-800 my-1 mx-3"></div>
+                                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors" onclick="openModal('import-modal')"><i class="fa-solid fa-file-import w-4 text-zinc-500"></i> Load League (.league)</a>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+
+                <div class="flex items-center gap-4">
+                    <button onclick="openModal('import-modal')" class="text-sm text-zinc-400 hover:text-white transition-colors flex items-center gap-2" title="Load Data File">
+                        <i class="fa-solid fa-file-import"></i> Load
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Mobile Menu removed entirely in favor of full header nav on all devices -->
+
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Hero Section (Open, Typographic, No bounding boxes) -->
+        <div class="py-20 md:py-32 border-b border-zinc-800/50">
+            <div class="max-w-3xl">
+                <div class="inline-flex items-center gap-2 mb-6">
+                    <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
+                    <span class="text-xs font-mono tracking-widest text-zinc-400 uppercase">100% Local Storage</span>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-light tracking-tighter text-white mb-6 leading-tight">
+                    Digital Scoring <br>
+                    <span class="text-zinc-500">Without Limits.</span>
+                </h1>
+                <p class="text-zinc-400 text-lg md:text-xl font-light mb-10 max-w-2xl leading-relaxed">
+                    A completely private, offline environment to score games, manage rosters, and organize entire leagues. Everything processes on your device.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="openModal('new-game-modal')" class="bg-white text-black hover:bg-zinc-200 font-medium py-3 px-8 transition-colors rounded-sm text-sm">
+                        Start Scoring
+                    </button>
+                    <button onclick="openModal('import-modal')" class="bg-transparent border border-zinc-700 text-zinc-300 hover:text-white hover:border-zinc-500 font-medium py-3 px-8 transition-colors rounded-sm text-sm">
+                        Load Existing Data
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sports Modules -->
+        <div class="py-16 border-b border-zinc-800/50">
+            <h2 class="text-xs font-mono uppercase tracking-widest text-zinc-500 mb-10">Supported Sports</h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+                <!-- Baseball -->
+                <div class="group">
+                    <div class="text-3xl text-zinc-700 group-hover:text-white transition-colors mb-5"><i class="fa-solid fa-baseball"></i></div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <h3 class="text-xl font-medium text-white">Baseball</h3>
+                        <span class="text-[10px] font-mono text-zinc-500 border border-zinc-800 px-1.5 py-0.5 rounded-sm">.bbgame</span>
+                    </div>
+                    <p class="text-sm text-zinc-400 font-light leading-relaxed">Score 9 innings tracking pitches, hits, errors, and precise at-bat outcomes.</p>
+                </div>
+
+                <!-- Hockey -->
+                <div class="group">
+                    <div class="text-3xl text-zinc-700 group-hover:text-white transition-colors mb-5"><i class="fa-solid fa-hockey-puck"></i></div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <h3 class="text-xl font-medium text-white">Hockey</h3>
+                        <span class="text-[10px] font-mono text-zinc-500 border border-zinc-800 px-1.5 py-0.5 rounded-sm">.hkgame</span>
+                    </div>
+                    <p class="text-sm text-zinc-400 font-light leading-relaxed">Manage 3 periods, track shots on goal, penalties, and individual player time.</p>
+                </div>
+
+                <!-- Football -->
+                <div class="group">
+                    <div class="text-3xl text-zinc-700 group-hover:text-white transition-colors mb-5"><i class="fa-solid fa-football"></i></div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <h3 class="text-xl font-medium text-white">Football</h3>
+                        <span class="text-[10px] font-mono text-zinc-500 border border-zinc-800 px-1.5 py-0.5 rounded-sm">.fbgame</span>
+                    </div>
+                    <p class="text-sm text-zinc-400 font-light leading-relaxed">Record 4 quarters of action, track downs, distances, and scoring plays.</p>
+                </div>
+
+                <!-- Basketball -->
+                <div class="group">
+                    <div class="text-3xl text-zinc-700 group-hover:text-white transition-colors mb-5"><i class="fa-solid fa-basketball"></i></div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <h3 class="text-xl font-medium text-white">Basketball</h3>
+                        <span class="text-[10px] font-mono text-zinc-500 border border-zinc-800 px-1.5 py-0.5 rounded-sm">.bkgame</span>
+                    </div>
+                    <p class="text-sm text-zinc-400 font-light leading-relaxed">Control the shot clock, track personal fouls, timeouts, and player rotations.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Management & Leagues -->
+        <div class="py-16">
+            <h2 class="text-xs font-mono uppercase tracking-widest text-zinc-500 mb-10">Data Management</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 border-l border-zinc-900 pl-4 md:pl-8">
+                <!-- Teams & Lineups -->
+                <div>
+                    <h3 class="text-lg font-medium text-white mb-2 flex items-center justify-between">
+                        Rosters & Lineups
+                        <span class="text-[10px] font-mono text-zinc-600">.team / .lnup</span>
+                    </h3>
+                    <p class="text-sm text-zinc-400 font-light mb-6">Build complete rosters, define depth charts, and save custom starting combinations for immediate use during game creation.</p>
+                    <a href="#" class="text-sm text-zinc-300 hover:text-white border-b border-zinc-700 hover:border-white transition-all pb-0.5 inline-flex items-center gap-2">
+                        Manage Rosters <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </a>
+                </div>
+
+                <!-- Leagues -->
+                <div>
+                    <h3 class="text-lg font-medium text-white mb-2 flex items-center justify-between">
+                        League Hub
+                        <span class="text-[10px] font-mono text-zinc-600">.league</span>
+                    </h3>
+                    <p class="text-sm text-zinc-400 font-light mb-6">Compile teams, schedules, and aggregate historical statistics into a single, comprehensive league file for long-term tracking.</p>
+                    <a href="#" class="text-sm text-zinc-300 hover:text-white border-b border-zinc-700 hover:border-white transition-all pb-0.5 inline-flex items-center gap-2">
+                        Open League Dashboard <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </a>
+                </div>
+                
+                <!-- Storage Info -->
+                <div class="pt-6 md:pt-0 md:border-l md:border-zinc-900 md:pl-8">
+                    <h3 class="text-sm font-medium text-zinc-500 mb-4">Local Device Status</h3>
+                    <ul class="space-y-3 font-mono text-xs">
+                        <li class="flex justify-between text-zinc-400"><span>Saved Teams</span> <span class="text-white" id="stat-teams">12</span></li>
+                        <li class="flex justify-between text-zinc-400"><span>Active Lineups</span> <span class="text-white" id="stat-lineups">8</span></li>
+                        <li class="flex justify-between text-zinc-400"><span>Game Records</span> <span class="text-white" id="stat-games">24</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+    </main>
+
+    <footer class="mt-auto border-t border-zinc-900 py-8 px-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="text-zinc-600 text-sm font-light">
+                &copy; <span id="year"></span> ScoreMaster.
+            </div>
+            <div class="flex gap-6 text-sm text-zinc-600 font-mono text-[10px] uppercase tracking-widest">
+                <span>100% Private</span>
+                <span>No Telemetry</span>
+                <span>Works Offline</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Backdrop -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-[60]" onclick="closeAllModals()"></div>
+
+    <!-- New Game Modal (Flat, sharp design) -->
+    <div id="new-game-modal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#09090b] border border-zinc-800 rounded-sm w-[90%] max-w-md hidden z-[70] shadow-2xl flex-col">
+        <div class="px-6 py-5 border-b border-zinc-800 flex justify-between items-center">
+            <h3 class="font-medium text-lg text-white">Select Sport</h3>
+            <button onclick="closeAllModals()" class="text-zinc-500 hover:text-white transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="p-6">
+            <div class="flex flex-col space-y-2">
+                <button class="w-full text-left px-4 py-4 border border-zinc-800 hover:border-zinc-500 hover:bg-zinc-900 transition-colors flex items-center gap-4 rounded-sm group">
+                    <i class="fa-solid fa-baseball text-zinc-600 group-hover:text-white w-6 text-center"></i>
+                    <span class="text-sm font-medium text-zinc-300 group-hover:text-white">Baseball Game</span>
+                </button>
+                <button class="w-full text-left px-4 py-4 border border-zinc-800 hover:border-zinc-500 hover:bg-zinc-900 transition-colors flex items-center gap-4 rounded-sm group">
+                    <i class="fa-solid fa-hockey-puck text-zinc-600 group-hover:text-white w-6 text-center"></i>
+                    <span class="text-sm font-medium text-zinc-300 group-hover:text-white">Hockey Game</span>
+                </button>
+                <button class="w-full text-left px-4 py-4 border border-zinc-800 hover:border-zinc-500 hover:bg-zinc-900 transition-colors flex items-center gap-4 rounded-sm group">
+                    <i class="fa-solid fa-football text-zinc-600 group-hover:text-white w-6 text-center"></i>
+                    <span class="text-sm font-medium text-zinc-300 group-hover:text-white">Football Game</span>
+                </button>
+                <button class="w-full text-left px-4 py-4 border border-zinc-800 hover:border-zinc-500 hover:bg-zinc-900 transition-colors flex items-center gap-4 rounded-sm group">
+                    <i class="fa-solid fa-basketball text-zinc-600 group-hover:text-white w-6 text-center"></i>
+                    <span class="text-sm font-medium text-zinc-300 group-hover:text-white">Basketball Game</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import File Modal (Minimalist) -->
+    <div id="import-modal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#09090b] border border-zinc-800 rounded-sm w-[90%] max-w-lg hidden z-[70] shadow-2xl flex-col">
+        <div class="px-6 py-5 border-b border-zinc-800 flex justify-between items-center">
+            <h3 class="font-medium text-lg text-white">Import Local Data</h3>
+            <button onclick="closeAllModals()" class="text-zinc-500 hover:text-white transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="p-6">
+            <p class="text-sm text-zinc-400 font-light mb-6">
+                Select a custom data file to load it into your current session.
+                <br><span class="text-[10px] font-mono text-zinc-600 mt-2 block">Accepts: .bbgame, .hkgame, .fbgame, .bkgame, .team, .lnup, .league</span>
+            </p>
+            
+            <!-- Minimal File Input UI -->
+            <div class="border border-dashed border-zinc-700 hover:border-white p-8 text-center transition-colors relative bg-zinc-900/30 rounded-sm" id="drop-zone">
+                <input type="file" id="file-input" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept=".bbgame,.hkgame,.fbgame,.bkgame,.team,.lnup,.league" onchange="handleFileSelect(event)">
+                
+                <div id="upload-prompt">
+                    <i class="fa-solid fa-arrow-up-from-bracket text-2xl text-zinc-600 mb-3"></i>
+                    <h4 class="text-sm font-medium text-zinc-300 mb-1">Click to browse</h4>
+                    <p class="text-xs text-zinc-600 font-mono">or drag and drop here</p>
+                </div>
+                
+                <div id="file-preview" class="hidden flex items-center justify-between relative z-20 text-left bg-zinc-900 border border-zinc-800 p-3 rounded-sm">
+                    <div class="flex items-center gap-3 overflow-hidden">
+                        <i class="fa-solid fa-file-lines text-zinc-500"></i>
+                        <div class="truncate">
+                            <p id="file-name" class="text-sm font-medium text-white truncate"></p>
+                            <p id="file-size" class="text-xs text-zinc-500 font-mono"></p>
+                        </div>
+                    </div>
+                    <button type="button" class="text-zinc-500 hover:text-white p-2 transition-colors" onclick="resetFileInput(event)">
+                        <i class="fa-solid fa-xmark text-sm"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="mt-8 flex justify-end gap-3">
+                <button onclick="closeAllModals()" class="px-5 py-2 text-sm font-medium text-zinc-400 hover:text-white transition-colors">Cancel</button>
+                <button id="btn-load-file" disabled onclick="processFile()" class="px-5 py-2 bg-white text-black hover:bg-zinc-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-sm font-medium rounded-sm flex items-center gap-2">
+                    <i class="fa-solid fa-circle-notch fa-spin hidden" id="loading-spinner"></i>
+                    Load File
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set current year
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                menu.classList.add('block');
+            } else {
+                menu.classList.add('hidden');
+                menu.classList.remove('block');
+            }
+        }
+
+        // Flat Modal Logic
+        function openModal(id) {
+            const backdrop = document.getElementById('modal-backdrop');
+            const modal = document.getElementById(id);
+            
+            backdrop.classList.remove('hidden');
+            backdrop.classList.add('animate-fade-in');
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex', 'animate-fade-in');
+            
+            if(id === 'import-modal') {
+                resetFileInput(null);
+            }
+        }
+
+        function closeAllModals() {
+            const backdrop = document.getElementById('modal-backdrop');
+            const modals = document.querySelectorAll('[id$="-modal"]');
+            
+            backdrop.classList.add('hidden');
+            backdrop.classList.remove('animate-fade-in');
+            
+            modals.forEach(modal => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex', 'animate-fade-in');
+            });
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeAllModals();
+        });
+
+        // File Handling
+        let selectedFile = null;
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            selectedFile = file;
+            
+            document.getElementById('file-name').textContent = file.name;
+            document.getElementById('file-size').textContent = formatBytes(file.size);
+            document.getElementById('file-preview').classList.remove('hidden');
+            document.getElementById('file-preview').classList.add('flex');
+            
+            document.getElementById('upload-prompt').classList.add('hidden');
+            document.getElementById('btn-load-file').disabled = false;
+        }
+
+        function resetFileInput(event) {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+            
+            document.getElementById('file-input').value = '';
+            selectedFile = null;
+            
+            document.getElementById('file-preview').classList.add('hidden');
+            document.getElementById('file-preview').classList.remove('flex');
+            
+            document.getElementById('upload-prompt').classList.remove('hidden');
+            document.getElementById('btn-load-file').disabled = true;
+        }
+
+        function formatBytes(bytes, decimals = 2) {
+            if (!+bytes) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+        }
+
+        function processFile() {
+            if (!selectedFile) return;
+
+            const btn = document.getElementById('btn-load-file');
+            const spinner = document.getElementById('loading-spinner');
+            
+            btn.disabled = true;
+            spinner.classList.remove('hidden');
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                // Simulate processing time
+                setTimeout(() => {
+                    spinner.classList.add('hidden');
+                    showToast(`Loaded ${selectedFile.name}`);
+                    closeAllModals();
+                    btn.disabled = false;
+                }, 600);
+            };
+            
+            reader.readAsText(selectedFile);
+        }
+
+        // Minimalist Toast
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-6 right-6 bg-white text-black px-4 py-3 text-sm font-medium rounded-sm shadow-xl z-[100] animate-fade-in flex items-center gap-3';
+            toast.innerHTML = `<i class="fa-solid fa-check text-xs"></i> ${message}`;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
